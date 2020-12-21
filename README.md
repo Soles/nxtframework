@@ -38,9 +38,11 @@ typora-copy-images-to: ./gitbook_resource
 
 #### Demo：
 
-1、地址：https://demo.nxtframework.com/admin 
+1、前台：https://demo.nxtframework.com
 
-2、用户名：guest 密码：fxxkyou1314 （访客权限，只能看，不能改）
+1、后台：https://demo.nxtframework.com/admin 
+
+2、用户名：guest 密码：（任意） （后台访客权限，只能看，不能改）
 
 
 
@@ -81,53 +83,70 @@ typora-copy-images-to: ./gitbook_resource
 
 
 
+#### 本地测试运行：
+
+**1、用database里面的nxtframework.sql在本机创建数据库，并设置：**
+
+```
+数据库名称：nxtframework
+数据库用户名：nxtframework
+数据库密码：12345678
+```
+
+**2、用IntelliJ IDEA打开项目，运行项目**
+
+**3、然后浏览器打开：`http://127.0.0.1:8080/admin`  用户名：`admin` 密码：`nxtframework.com`**
+
+##### 4、前台：`http://127.0.0.1:8080`
+
 
 
 #### 单机部署方式：
 
-**1、clone项目，用docker创建数据库镜像：**
-
-```
-git clone https://github.com/soyojoearth/nxtframework.git
-cd nxtframework/wwwroot/db/
-#创建、启动docker数据库（仅供测试）
-docker build --tag nxtmysql:0.1.0 .
-#回到项目目录
-cd ../../
-```
-
-**2、到项目根目录，执行：**
+##### 1、用IntelliJ IDEA打开项目，进行package打包，然后命令行到项目根目录，执行：
 
 
 ```
-#打包
-mvn package -Dmaven.test.skip=true
 #创建镜像
 docker build --tag nxtframework:0.1.0 .
-#启动本地测试
-cd wwwroot
-docker-compose -f docker-compose-quickstart-with-db.yml up
 ```
 
-**3、然后浏览器打开：`http://127.0.0.1:8686/admin`  用户名：`admin` 密码：`nxtframework.com`**
+##### 2、把镜像推到docker仓库，并拉到服务器上；
 
-**4、如何启用80端口、部署SSL：**
+##### 3、用database里面的nxtframework.sql在服务器创建数据库；
 
-添加以下hosts
+##### 4、配置 `wwwroot/docker-compose-quickstart.yml`文件中的docker镜像、数据库连接：
 
-`127.0.0.1  test.nxtframework.com`
+`#不要写127.0.0.1，必须写局域网地址（即便是本机数据库）`
 
-打开浏览器访问：http://test.nxtframework.com/admin 和 https://test.nxtframework.com/admin
+![image-20201221170703085](gitbook_resource/image-20201221170703085.png)
 
-**5、如何更换域名、证书：**
+##### 5、把wwwroot目录传到服务器，执行：
+
+```
+cd wwwroot
+docker-compose -f docker-compose-quickstart.yml up
+```
+
+##### 6、然后浏览器打开：`http://服务器地址:8686/admin`  用户名：`admin` 密码：`nxtframework.com`
+
+
+
+##### 如何启用80端口、部署SSL：
+
+##### 1、本机添加以下hosts
+
+`服务器IP  test.nxtframework.com`
+
+打开浏览器访问：`http://test.nxtframework.com/admin` 和 `https://test.nxtframework.com/admin`
+
+**2、如何更换域名、证书：**
 
 修改`wwwroot/http/nginx.conf`文件，将域名修改成自己的域名；
 
 更换`wwwroot/http/ssl*` 两个证书文件；
 
-**6、其它**
 
-一般不建议用docker部署mysql，正式商用时，还请使用独立的mysql数据库，使用 `docker-compose-quickstart.yml` 启动应用
 
 
 
